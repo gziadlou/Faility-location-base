@@ -12,13 +12,23 @@ df_j = xl.parse("Facilities")
 m = Container()
 
 # Sets
-i = Set(m, name="i", description="customers")
-j = Set(m, name="j", description="potential sites")
+i = Set(m, name="i", records=df_i["i"], description="customers")
+j = Set(m, name="j", records=df_j["j"], description="potential facilities")
 
-# Parameters
-d = Parameter(m, name="d", domain=[i, j], description="distance between i and j")
-w = Parameter(m, name="w", domain=i, description="weight/demand of customer i")
+# Parameters (Coordinates)
+lat_i = Parameter(m, name="lat_i", domain=i, records=df_i[["i", "lat"]])
+lon_i = Parameter(m, name="lon_i", domain=i, records=df_i[["i", "lon"]])
+lat_j = Parameter(m, name="lat_j", domain=j, records=df_j[["j", "lat"]])
+lon_j = Parameter(m, name="lon_j", domain=j, records=df_j[["j", "lon"]])
+
+# Parameters (Demand and P)
+w = Parameter(m, name="w", domain=i, records=df_i[["i", "demand"]], description="weight/demand of customer i")
 p_num = Parameter(m, name="p_num", description="number of facilities to locate")
+
+# Calculate Cost/Distance Matrix (Euclidean)
+d = Parameter(m, name="d", domain=[i, j], description="distance between i and j")
+d[i, j] = ((lat_i[i] - lat_j[j])**2 + (lon_i[i] - lon_j[j])**2)**0.5
+
 
 # Variables
 x = Variable(m, name="assign", domain=[i, j], type="binary", description="assignment of i to j")
@@ -46,16 +56,6 @@ p_median = Model(
     objective=obj
 )
 
-# Data
-i.setRecords(["C1", "C2", "C3", "C4"])
-j.setRecords(["S1", "S2", "S3"])
-w.setRecords([("C1", 10), ("C2", 20), ("C3", 30), ("C4", 40)])
-p_num.setRecords(2)
-d.setRecords([
-    ("C1", "S1", 2), ("C1", "S2", 10), ("C1", "S3", 8),
-    ("C2", "S1", 9), ("C2", "S2", 3),  ("C2", "S3", 5),
-    ("C3", "S1", 4), ("C3", "S2", 6),  ("C3", "S3", 2),
-    ("C4", "S1", 10), ("C4", "S2", 2), ("C4", "S3", 7)
-])
+
 
 p_median.solve(output=sys.stdout)
