@@ -1,6 +1,13 @@
 import sys
 from gamspy import Container, Set, Parameter, Variable, Equation, Model, Sum, Sense
 
+
+
+# Load Data
+xl = pd.ExcelFile("data.xlsx")
+df_i = xl.parse("Customers")
+df_j = xl.parse("Facilities")
+
 m = Container()
 
 # Sets
