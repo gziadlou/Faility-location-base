@@ -27,8 +27,26 @@ demand = Parameter(m, name="demand", domain=i, records=df_i[["i", "demand"]])
 f = Parameter(m, name="f", domain=j, records=df_j[["j", "f"]])
 
 # 5. Calculate Cost/Distance Matrix (Euclidean)
+# 5. Calculate Cost/Distance Matrix (using SCGraph freeway distances)
+# 5. Calculate Cost/Distance Matrix (using SCGraph freeway distances)
 c = Parameter(m, name="c", domain=[i, j])
-c[i, j] = ((lat_i[i] - lat_j[j])**2 + (lon_i[i] - lon_j[j])**2)**0.5
+
+for i_idx, ci in df_i.iterrows():       # i_idx is the customer row index
+    for j_idx, fj in df_j.iterrows():   # j_idx is the facility row index
+
+        origin_node = {"latitude": float(ci["lat"]), "longitude": float(ci["lon"])}
+        destination_node = {"latitude": float(fj["lat"]), "longitude": float(fj["lon"])}
+
+        # Compute shortest path distance
+        path_result = us_freeway_geograph.get_shortest_path(
+            origin_node=origin_node,
+            destination_node=destination_node,
+            output_units="mi"   # or 'km'
+        )
+
+        # Assign distance to GAMSPy parameter
+        c[ci["i"], fj["j"]] = path_result["length"]
+
 
 # 6. Variables
 x = Variable(m, name="x", domain=[i, j], type="positive")
