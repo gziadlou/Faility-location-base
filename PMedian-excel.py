@@ -27,7 +27,19 @@ p_num = Parameter(m, name="p_num", description="number of facilities to locate")
 
 # Calculate Cost/Distance Matrix (Euclidean)
 d = Parameter(m, name="d", domain=[i, j], description="distance between i and j")
-d[i, j] = ((lat_i[i] - lat_j[j])**2 + (lon_i[i] - lon_j[j])**2)**0.5
+
+for i_idx, ci in df_i.iterrows():
+    for j_idx, fj in df_j.iterrows():
+        origin_node = {"latitude": float(ci["lat"]), "longitude": float(ci["lon"])}
+        destination_node = {"latitude": float(fj["lat"]), "longitude": float(fj["lon"])}
+
+        path_result = us_freeway_geograph.get_shortest_path(
+            origin_node=origin_node,
+            destination_node=destination_node,
+            output_units="mi"  # or 'km'
+        )
+
+        d[ci["i"], fj["j"]] = path_result["length"]
 
 
 # Variables
