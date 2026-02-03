@@ -1,7 +1,7 @@
 import sys
 import pandas as pd
 from gamspy import Container, Set, Parameter, Variable, Equation, Model, Sum, Sense
-from scgraph.core import GeoGraph
+from scgraph.geographs.us_freeway import us_freeway_geograph
 
 
 # 1. Load Data
