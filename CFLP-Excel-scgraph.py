@@ -43,7 +43,7 @@ for i_idx, ci in df_i.iterrows():       # i_idx is the customer row index
         )
 
         # Assign distance to GAMSPy parameter
-        c[ci["i"], fj["j"]] = path_result["length"]
+        c[ci["i"], fj["j"]] = round(path_result["length"], 0)
 
 
 # 6. Variables
