@@ -26,8 +26,6 @@ capacity = Parameter(m, name="capacity", domain=j, records=df_j[["j", "capacity"
 demand = Parameter(m, name="demand", domain=i, records=df_i[["i", "demand"]])
 f = Parameter(m, name="f", domain=j, records=df_j[["j", "f"]])
 
-# 5. Calculate Cost/Distance Matrix (Euclidean)
-# 5. Calculate Cost/Distance Matrix (using SCGraph freeway distances)
 # 5. Calculate Cost/Distance Matrix (using SCGraph freeway distances)
 c = Parameter(m, name="c", domain=[i, j])
 
