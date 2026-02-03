@@ -24,6 +24,7 @@ lon_j = Parameter(m, name="lon_j", domain=j, records=df_j[["j", "lon"]])
 # Parameters (Demand and P)
 w = Parameter(m, name="w", domain=i, records=df_i[["i", "demand"]], description="weight/demand of customer i")
 p_num = Parameter(m, name="p_num", description="number of facilities to locate")
+p_num[...] = 5
 
 # Calculate Cost/Distance Matrix (Euclidean)
 d = Parameter(m, name="d", domain=[i, j], description="distance between i and j")
